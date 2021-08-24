@@ -5,6 +5,7 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
         linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 drawerLayout.closeDrawers();
             }
         });
@@ -94,6 +97,7 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
 
             /** Called when a drawer has settled in a completely closed state. */
             public void onDrawerClosed(View view) {
+                Toast.makeText(getApplicationContext(), "drawer closing", Toast.LENGTH_SHORT).show();
                 super.onDrawerClosed(view);
                 linearLayout.removeAllViews();
                 linearLayout.invalidate();
@@ -104,11 +108,28 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
                 super.onDrawerSlide(drawerView, slideOffset);
                 if (slideOffset > 0.6 && linearLayout.getChildCount() == 0)
                     viewAnimator.showMenuContent();
+                Toast.makeText(getApplicationContext(), "drawer slide", Toast.LENGTH_SHORT).show();
+
+                    //drawerLayout.closeDrawers();
+//                drawerLayout.closeDrawers();
+
             }
 
             /** Called when a drawer has settled in a completely open state. */
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
+                Runnable background = new Runnable() {
+                    @Override
+                    public void run() {
+                        // This is the delay
+                        //Thread.Sleep( 2000 );
+                        SystemClock.sleep(2000);
+                        drawerLayout.closeDrawers();
+                    }
+                };
+
+                new Thread( background ).start();
+
             }
         };
         drawerLayout.addDrawerListener(drawerToggle);
